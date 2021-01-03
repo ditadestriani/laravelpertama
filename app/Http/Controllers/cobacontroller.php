@@ -1,54 +1,56 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\models\friends;
 
+use App\Models\Friends;
 use Illuminate\Http\Request;
 
-class cobacontroller extends controller
-{
-    
-public function index()
-{
-    $friends = friends::orderBy('id', 'desc') -> paginate(3);
-
-    return view('friends.index', compact('friends'));
-}
-public function create()
-{
-    return view('friends.create');
-}
-public function store(Request $request)
+class CobaController extends Controller
 {
 
+    public function index()
+    {
+        $friends = Friends::orderby('id', 'desc') -> paginate(3);
 
-    // validate the request...
-    $request->validate([
-        'nama' => 'required|unique:friends|max:255',
-        'no_tlp' => 'required|numeric',
-        'alamat' => 'required',
+        return view('friends.index', compact('friends'));
+    }
 
-    ]);
+    public function create()
+    {
+        return view('friends.create');
+    }
 
-    $friends = new friends;
+    public function store(Request $request)
+    {
+        // Validate the request...
+        $request->validate([
+            'nama' => 'required|unique:friends|max:255',
+            'no_tlp' => 'required|numeric',
+            'alamat' => 'required',
+            'groups_id' => 'required',
+        ]);
 
-    $friends->nama = $request->nama; 
-    $friends->no_tlp = $request->no_tlp; 
-    $friends->alamat = $request->alamat;
-    $friends->save();
+        $friends = new Friends;
 
-    return redirect('/');
+        $friends->nama = $request->nama;
+        $friends->no_tlp = $request->no_tlp;
+        $friends->alamat = $request->alamat;
+        $friends->save();
+
+        return redirect('/');
     }
     public function show($id)
     {
-        $friend = friends::where('id', $id)->first();
-        return view('friends.show', ['friend' => $friend]);
+        $friends = Friends::where('id', $id)->first();
+        return view('friends.show', ['friend' => $friends]);
     }
+
     public function edit($id)
     {
-        $friend = friends::where('id', $id)->first();
-        return view('friends.edit', ['friend' => $friend]);
+        $friends = Friends::where('id', $id)->first();
+        return view('friends.edit', ['friend' => $friends]);
     }
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -56,9 +58,7 @@ public function store(Request $request)
             'no_tlp' => 'required|numeric',
             'alamat' => 'required',
         ]);
-
-        friends::find($id)-> update([
-
+        Friends::find($id)->update([
             'nama' => $request->nama,
             'no_tlp' => $request->no_tlp,
             'alamat' => $request->alamat
@@ -68,9 +68,7 @@ public function store(Request $request)
     }
     public function destroy($id)
     {
-        friends::find($id)->delete();
+        Friends::find($id)->delete();
         return redirect('/');
     }
-
-
 }
