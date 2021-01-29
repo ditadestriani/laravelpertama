@@ -16,14 +16,14 @@ class CobaController extends Controller
     public function index()
     {
         $friends = Friends::orderby('id', 'desc') -> paginate(3);
-
+  
         return response()->json([
             'success' => true,
             'message' => 'Daftar Data Teman',
             'data' => $friends
         ], 200);
     }
-
+  
     /**
      * Store a newly created resource in storage.
      *
@@ -38,14 +38,14 @@ class CobaController extends Controller
             'alamat' => 'required',
             'groups_id' => 'required',
         ]);
-
+  
         $friends = Friends::create([
             'nama' => $request->nama,
             'no_tlp' => $request->no_tlp,
             'alamat' => $request->alamat,
             'groups_id' => $request->groups_id
         ]);
-
+  
         if($friends)
         {
             return response()->json([
@@ -61,7 +61,7 @@ class CobaController extends Controller
             ], 409);
         }
     }
-
+  
     /**
      * Display the specified resource.
      *
@@ -71,6 +71,13 @@ class CobaController extends Controller
     public function show($id)
     {
         //
+        $friend = Friends::where('id', $id)->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail data teman',
+            'data' => $friend
+        ], 200);
     }
 
     /**
@@ -83,6 +90,22 @@ class CobaController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $request->validate([
+            'nama' => 'required|unique:friends|max:255',
+            'no_tlp' => 'required|numeric',
+            'alamat' => 'required',
+        ]);
+        $f = Friends::find($id)->update([
+            'nama' => $request->nama,
+            'no_tlp' => $request->no_tlp,
+            'alamat' => $request->alamat
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Post Updated',
+            'data' => $f
+        ], 200);
     }
 
     /**
@@ -94,5 +117,12 @@ class CobaController extends Controller
     public function destroy($id)
     {
         //
+        $cek = Friends::find($id)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Post Deleted',
+            'data' => $cek
+        ], 200);
     }
-}
+}  
