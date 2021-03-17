@@ -1,18 +1,9 @@
-<?php
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class Groups extends Model
+@@ -9,7 +9,7 @@ class groups extends Model
 {
-   use HasFactory;
+    use HasFactory;
 
-   protected $guarded = ['name'];
+    protected $guarded = ['mana'];
+    protected $fillable = ['nama','no_tlp','alamat'];
 
-    public function friends()
+    public function groups()
     {
-        return $this->hasMany('App\Models\Friends');
-    }
-}
